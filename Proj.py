@@ -62,8 +62,9 @@ if __name__ == '__main__':
     print(sum(days)/len(days))
 
 
-    plt.plot(range(0, t+1), S, color='red')
-    plt.plot(range(0, t+1), M, color='green')
-    plt.plot(range(0, t+1), I, color='blue')
-    plt.plot(range(0, t+1), R, color='orange')
+    plt.plot(range(0, t+1), S, color='red', label='Susceptible')
+    plt.plot(range(0, t+1), M, color='green', label='Masked')
+    plt.plot(range(0, t+1), I, color='blue', label='Infected')
+    plt.plot(range(0, t+1), R, color='orange', label='Recovered')
+    plt.legend()
     plt.show()
