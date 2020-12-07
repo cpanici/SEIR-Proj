@@ -20,11 +20,11 @@ if __name__ == '__main__':
 
     # Mask adoption rate. Determines how many start in S vs M
     # Hi, avg, low: .2, .5, .9 for each
-    mask_adoption = .5
-    mask_effectiveness = .5
+    mask_adoption = .9
+    mask_effectiveness = .9
 
     # P(S -> E)
-    r0 = 1.2        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
+    r0 = 2.7        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
     alpha = r0/N
 
     #P(M -> E)
@@ -85,7 +85,6 @@ if __name__ == '__main__':
 
 
             t += 1
-
 
         days.append(t)
         deaths.append(D[-1])
