@@ -45,9 +45,14 @@ if __name__ == '__main__':
     # 1% of population
     num_vaccinated_per_day = N * .01
 
+    # ICU info
+    icu_beds = 27
+    icu_rate = .001782
 
     days = []
     deaths = []
+    days_til_peak = []
+    peak_infections = 1
     for i in range(100):
 
         # for debugging
@@ -71,6 +76,12 @@ if __name__ == '__main__':
             num_leaving_I = binomial(I[t], beta)
             I_to_R = math.ceil(num_leaving_I * recovery_rate)
             I_to_D = num_leaving_I - I_to_R
+
+            # lower recovery if ICU full
+            if I[t]*icu_rate > icu_beds:
+                recovery_rate = .9
+            else:
+                recovery_rate = .97
 
             # transitioning num leaving I to R or D
             R.append(R[t] + I_to_R)
@@ -129,11 +140,14 @@ if __name__ == '__main__':
             # need to make sure S + R + D + I + V == N
             N_list.append(S[t] + E[t] + R[t] + D[t] + I[t] + M[t])
 
-
+            if I[-1] > peak_infections:
+                peak_infections = I[-1]
+                peak_day = t 
 
             t += 1
 
         days.append(t)
+        days_til_peak.append(peak_day)
         deaths.append(D[-1])
 
     print(sum(days) / len(days), 'avg days')

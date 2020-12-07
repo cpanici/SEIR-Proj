@@ -20,8 +20,8 @@ if __name__ == '__main__':
 
     # Mask adoption rate. Determines how many start in S vs M
     # Hi, avg, low: .2, .5, .9 for each
-    mask_adoption = .9
-    mask_effectiveness = .9
+    mask_adoption = .2
+    mask_effectiveness = .2
 
     # P(S -> E)
     r0 = 2.7        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
@@ -41,9 +41,14 @@ if __name__ == '__main__':
     recovery_rate = .97  # somewhere between [.97, .9975]
     death_rate = 1 - recovery_rate
 
+    #ICU info
+    icu_beds = 27
+    icu_rate = .001782
 
     days = []
     deaths = []
+    days_til_peak = []
+    peak_infections = 1
     for i in range(100):
 
         # for debugging
@@ -64,6 +69,13 @@ if __name__ == '__main__':
 
             # since the path from I could go to R or D, we first calculate the num that go to R or D
             num_leaving_I = binomial(I[t], beta)
+
+           # lower recovery if ICU full
+            if I[t]*icu_rate > icu_beds:
+                recovery_rate = .9
+            else:
+                recovery_rate = .97
+
             I_to_R = math.ceil(num_leaving_I * recovery_rate)
             I_to_D = num_leaving_I - I_to_R
 
@@ -82,15 +94,19 @@ if __name__ == '__main__':
             # need to make sure S + R + D + I + V == N
             N_list.append(S[t] + E[t] + R[t] + D[t] + I[t] + M[t])
 
-
+            if I[-1] > peak_infections:
+                peak_infections = I[-1]
+                peak_day = t 
 
             t += 1
 
         days.append(t)
+        days_til_peak.append(peak_day)
         deaths.append(D[-1])
 
     print(sum(days) / len(days), 'avg days')
     print(sum(deaths)/len(deaths), 'avg deaths')
+    print(sum(days_til_peak)/len(days_til_peak), 'avg days til peak')
 
     plt.figure(figsize=(15, 5))
     plt.plot(range(0, t + 1), S, color='red', label='Susceptible Unmasked')

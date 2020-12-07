@@ -37,8 +37,14 @@ if __name__ == '__main__':
     # 1% of population
     num_vaccinated_per_day = N * .01
 
+    # ICU info
+    icu_beds = 27
+    icu_rate = .001782
 
     days = []
+    deaths = []
+    days_til_peak = []
+    peak_infections = 1
     for i in range(100):
         S = [N-1]
         E = [0]
@@ -56,6 +62,12 @@ if __name__ == '__main__':
             num_leaving_I = binomial(I[t], beta)
             I_to_R = math.ceil(num_leaving_I * recovery_rate)
             I_to_D = num_leaving_I - I_to_R
+
+            # lower recovery if ICU full
+            if I[t]*icu_rate > icu_beds:
+                recovery_rate = .9
+            else:
+                recovery_rate = .97
 
             # transitioning num leaving I to R or D
             R.append(R[t] + I_to_R)
@@ -81,11 +93,17 @@ if __name__ == '__main__':
             # NOTE: formula for E is what the formula for I was under the SIR model
             E.append(N - S[t + 1] - I[t + 1] - R[t + 1] - D[t + 1] - V[t + 1])
 
+            if I[-1] > peak_infections:
+                peak_infections = I[-1]
+                peak_day = t 
+
 
             t += 1
 
 
         days.append(t)
+        days_til_peak.append(peak_day)
+        deaths.append(D[-1])
 
     print(sum(days) / len(days))
 
