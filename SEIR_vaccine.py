@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     # P(I -> D)
     recovery_rate = .97  # somewhere between [.97, .9975]
-    death_rate = beta * (1 - recovery_rate)
+    death_rate = 1 - recovery_rate
 
     # went with this value because it is unknown how many people can be vaccinated per day, but it would likely be at least
     # 1% of population
@@ -56,7 +56,7 @@ if __name__ == '__main__':
             S.append(binomial(S[t], (1 - alpha) ** I[t]))
 
             # since the path from I could go to R or D, we first calculate the num that go to R or D
-            num_leaving_I = binomial(I[t], beta + death_rate)
+            num_leaving_I = binomial(I[t], beta)
             I_to_R = math.ceil(num_leaving_I * recovery_rate)
             I_to_D = num_leaving_I - I_to_R
 
