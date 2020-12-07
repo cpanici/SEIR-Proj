@@ -16,10 +16,10 @@ GROUPS:
 
 if __name__ == '__main__':
     # Population size
-    N = 100000
+    N = 10000
 
     # P(S -> E)
-    r0 = 2.7        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
+    r0 = .9        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
     alpha = r0/N
 
     # P(E -> I) -- set as .375 because it usually takes 2-4 days to become infectious?
@@ -40,10 +40,6 @@ if __name__ == '__main__':
 
     days = []
     for i in range(100):
-
-        # for debugging
-        N_list = []
-
         S = [N-1]
         E = [0]
         I = [1]
@@ -67,16 +63,6 @@ if __name__ == '__main__':
 
             I.append(binomial(E[t], exposed_rate))
 
-
-
-            # calculating vaccination rate
-            # if t == 250:
-            #     susceptible_at_t250 = S[t]  # number of people vaccinated is function of this val
-            #
-            #     # assuming new vaccinations are fixed
-            #     # see google doc for justifications for .002
-            #     num_vaccinated_per_day = math.floor(.002 * susceptible_at_t250)
-
             # moving from S -> V
             if t < 250:
                 V.append(0)
@@ -95,12 +81,6 @@ if __name__ == '__main__':
             # NOTE: formula for E is what the formula for I was under the SIR model
             E.append(N - S[t + 1] - I[t + 1] - R[t + 1] - D[t + 1] - V[t + 1])
 
-            # adjusting
-
-            # need to make sure S + R + D + I + V == N
-            N_list.append(S[t] + E[t] + R[t] + D[t] + I[t] + V[t])
-
-
 
             t += 1
 
@@ -118,20 +98,3 @@ if __name__ == '__main__':
     plt.plot(range(0, t + 1), D, color='black', label='Deceased')
     plt.legend()
     plt.show()
-
-# q=1
-# print(N_list[q])
-# print(S[q])
-# print(E[q])
-# print(I[q])
-# print(R[q])
-# print(D[q])
-# print(V[q])
-
-# print(N_list[q]-N_list[q-1])
-# print(S[q] - S[q-1])
-# print(E[q] - E[q-1])
-# print(I[q] - I[q-1])
-# print(R[q] - R[q-1])
-# print(D[q] - D[q-1])
-# print(V[q] - V[q-1])

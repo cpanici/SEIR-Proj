@@ -41,6 +41,10 @@ if __name__ == '__main__':
     recovery_rate = .97  # somewhere between [.97, .9975]
     death_rate = 1 - recovery_rate
 
+    # went with this value because it is unknown how many people can be vaccinated per day, but it would likely be at least
+    # 1% of population
+    num_vaccinated_per_day = N * .01
+
 
     days = []
     deaths = []
@@ -55,6 +59,7 @@ if __name__ == '__main__':
         I = [1]
         R = [0]
         D = [0]
+        V = [0]
         t = 0
 
         # Run until all recovered or we run out of infected/exposed people
@@ -73,9 +78,51 @@ if __name__ == '__main__':
 
             I.append(binomial(E[t], exposed_rate))
 
+            # moving from S -> V
+            if t < 250:
+                V.append(0)
+
+            else:
+                # edge case if remainder of susceptible population gets vaccinated
+                if S[t] + M[t] <= num_vaccinated_per_day:
+                    V.append(V[t] + S[t] + M[t])
+                    S[t + 1] = 0
+                    M[t + 1] = 0
+
+                elif M[t] > math.floor(num_vaccinated_per_day * (mask_adoption)) and S[t] > math.ceil(num_vaccinated_per_day * (1 - mask_adoption)):
+                    print('regular case')
+
+                    # assuming masked and unmasked get vaccinated same rate
+                    num_vaccinated_M = math.floor(num_vaccinated_per_day * mask_adoption)
+
+                    V.append(V[t] + num_vaccinated_per_day)
+                    S[t + 1] = S[t + 1] - (num_vaccinated_per_day - num_vaccinated_M)
+                    M[t + 1] = M[t + 1] - num_vaccinated_M
+
+
+
+                # vaccinating remaining M group
+                elif M[t] <= math.floor(num_vaccinated_per_day * (mask_adoption)):
+                    remaining_M = M[t]
+
+                    V.append(V[t] + num_vaccinated_per_day)
+                    M[t + 1] = 0
+                    S[t + 1] = S[t + 1] - num_vaccinated_per_day - remaining_M
+
+                # vaccinating remaining S group
+                elif S[t] <= math.ceil(num_vaccinated_per_day * (1 - mask_adoption)):
+                    remaining_S = S[t]
+
+                    V.append(V[t] + num_vaccinated_per_day)
+                    S[t + 1] = 0
+                    M[t + 1] = M[t + 1] - num_vaccinated_per_day - remaining_S
+
+                else:
+                    print('?')
+
 
             # NOTE: formula for E is what the formula for I was under the SIR model
-            E.append(N - S[t + 1] - I[t + 1] - R[t + 1] - D[t + 1] - M[t + 1])
+            E.append(N - S[t + 1] - I[t + 1] - R[t + 1] - D[t + 1] - M[t + 1] - V[t + 1])
 
             # adjusting
 
@@ -93,11 +140,12 @@ if __name__ == '__main__':
     print(sum(deaths)/len(deaths), 'avg deaths')
 
     plt.figure(figsize=(15, 5))
-    plt.plot(range(0, t + 1), S, color='red', label='Susceptible')
+    plt.plot(range(0, t + 1), S, color='red', label='Susceptible Unmasked')
     plt.plot(range(0, t + 1), E, color='green', label='Exposed')
     plt.plot(range(0, t + 1), I, color='blue', label='Infected')
     plt.plot(range(0, t + 1), R, color='orange', label='Recovered')
-    plt.plot(range(0, t + 1), M, color='plum', label='Masked')
+    plt.plot(range(0, t + 1), M, color='plum', label='Susceptible Masked')
+    plt.plot(range(0, t + 1), V, color='purple', label='Vaccinated')
     plt.plot(range(0, t + 1), D, color='black', label='Deceased')
     plt.legend()
     plt.show()
