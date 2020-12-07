@@ -19,7 +19,7 @@ if __name__ == '__main__':
     N = 10000
 
     # P(S -> E)
-    alpha = .0005
+    alpha = .00005
 
     # P(E -> I) -- set as .375 because it usually takes 2-4 days to become infectious?
     # should think ab this a bit more
