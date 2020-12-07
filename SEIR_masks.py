@@ -24,7 +24,7 @@ if __name__ == '__main__':
     mask_effectiveness = .5
 
     # P(S -> E)
-    r0 = 1.2
+    r0 = 1.2        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
     alpha = r0/N
 
     #P(M -> E)
@@ -100,6 +100,5 @@ if __name__ == '__main__':
     plt.plot(range(0, t + 1), R, color='orange', label='Recovered')
     plt.plot(range(0, t + 1), M, color='purple', label='Masked')
     plt.plot(range(0, t + 1), D, color='black', label='Deceased')
-    plt.plot(range(0, t+1), N_list, color='pink', label='Total')
     plt.legend()
     plt.show()
