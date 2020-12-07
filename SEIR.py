@@ -14,7 +14,7 @@ GROUPS:
 
 if __name__ == '__main__':
     # Population size
-    N = 100000
+    N = 10000
 
     # P(S -> E)
     alpha = .0005
@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     days = []
     for i in range(100):
-        S = [N-1]
+        S = [N]
         E = [0]
         I = [1]
         R = [0]
@@ -40,22 +40,21 @@ if __name__ == '__main__':
         t = 0
 
         # Run until all recovered or we run out of infected/exposed people
-        while R[t] < (N + 1) and (I[t] > 0 or E[t] > 0):
+        while (R[t] < N + 1) and (I[t] > 0 or E[t] > 0):
             S.append(binomial(S[t], (1 - alpha) ** I[t]))
             R.append(R[t] + binomial(I[t], beta))
             D.append(D[t] + binomial(I[t], death_rate))
             I.append(binomial(E[t], exposed_rate))
 
             # NOTE: formula for E is what the formula for I was under the SIR model
-            E.append(N + 1 - S[t + 1] - R[t + 1])
+            E.append(N + 1 - S[t + 1] - R[t + 1] - D[t + 1] - I[t + 1])
 
 
             t += 1
 
         days.append(t)
-    print(sum(days) / len(days))
-
-    plt.figure(figsize=(30, 10))
+    print('Average Length in Days:', sum(days) / len(days))
+    plt.figure(figsize=(15, 5))
     plt.plot(range(0, t + 1), S, color='red', label='Susceptible')
     plt.plot(range(0, t + 1), E, color='green', label='Exposed')
     plt.plot(range(0, t + 1), I, color='blue', label='Infected')
