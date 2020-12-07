@@ -93,11 +93,11 @@ if __name__ == '__main__':
     print(sum(deaths)/len(deaths), 'avg deaths')
 
     plt.figure(figsize=(15, 5))
-    plt.plot(range(0, t + 1), S, color='red', label='Susceptible')
+    plt.plot(range(0, t + 1), S, color='red', label='Susceptible Unmasked')
     plt.plot(range(0, t + 1), E, color='green', label='Exposed')
     plt.plot(range(0, t + 1), I, color='blue', label='Infected')
     plt.plot(range(0, t + 1), R, color='orange', label='Recovered')
-    plt.plot(range(0, t + 1), M, color='plum', label='Masked')
+    plt.plot(range(0, t + 1), M, color='plum', label='Susceptible Masked')
     plt.plot(range(0, t + 1), D, color='black', label='Deceased')
     plt.legend()
     plt.show()

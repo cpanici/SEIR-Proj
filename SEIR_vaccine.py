@@ -16,10 +16,10 @@ GROUPS:
 
 if __name__ == '__main__':
     # Population size
-    N = 10000
+    N = 100000
 
     # P(S -> E)
-    r0 = .9        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
+    r0 = 2.7        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
     alpha = r0/N
 
     # P(E -> I) -- set as .375 because it usually takes 2-4 days to become infectious?
