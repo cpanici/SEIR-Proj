@@ -24,7 +24,7 @@ if __name__ == '__main__':
     exposed_rate = .375
 
     # P(I -> R)
-    beta = .05
+    beta = .1
 
     # P(I -> D)
     recovery_rate = .97  # somewhere between [.97, .9975]
