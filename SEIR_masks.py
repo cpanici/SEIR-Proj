@@ -1,4 +1,5 @@
 from numpy.random import binomial
+import numpy as np
 import matplotlib.pyplot as plt
 import math
 
@@ -20,8 +21,8 @@ if __name__ == '__main__':
 
     # Mask adoption rate. Determines how many start in S vs M
     # Hi, avg, low: .2, .5, .9 for each
-    mask_adoption = .2
-    mask_effectiveness = .2
+    mask_adoption = .9
+    mask_effectiveness = .9
 
     # P(S -> E)
     r0 = 2.7        # avg number of people an infected person will spread to, scale by pop to get "per person" avg
@@ -104,9 +105,26 @@ if __name__ == '__main__':
         days_til_peak.append(peak_day)
         deaths.append(D[-1])
 
-    print(sum(days) / len(days), 'avg days')
-    print(sum(deaths)/len(deaths), 'avg deaths')
-    print(sum(days_til_peak)/len(days_til_peak), 'avg days til peak')
+
+    avg_length = sum(days) / len(days)
+    avg_deaths = sum(deaths)/len(deaths)
+    avg_days_til_peak = sum(days_til_peak)/len(days_til_peak)
+
+    plt.hist(days, bins=np.arange(min(days), max(days) + 20, 20))
+    plt.title(f'Pandemic Length in Days (Avg: {avg_length})', size=15)
+    plt.show()
+    
+    plt.hist(deaths, bins=np.arange(min(deaths), max(deaths) + 4, 4))
+    plt.title(f'Total Deaths (Avg: {avg_deaths})', size=15)
+    plt.show()
+    
+    plt.hist(days_til_peak, bins=np.arange(min(days_til_peak), max(days_til_peak) + 1, 1))
+    plt.title(f'Days Til Peak Infections (Avg: {avg_days_til_peak})', size=15)
+    plt.show()
+
+    graph_label = {.2: 'Low', .5: 'Medium', .9: 'High'}
+    adoption_label = graph_label[mask_adoption]
+    effectiveness_label = graph_label[mask_effectiveness]
 
     plt.figure(figsize=(15, 5))
     plt.plot(range(0, t + 1), S, color='red', label='Susceptible Unmasked')
@@ -116,4 +134,5 @@ if __name__ == '__main__':
     plt.plot(range(0, t + 1), M, color='plum', label='Susceptible Masked')
     plt.plot(range(0, t + 1), D, color='black', label='Deceased')
     plt.legend()
+    plt.title(f'{adoption_label} Mask Adoption & {effectiveness_label} Effectiveness')
     plt.show()
