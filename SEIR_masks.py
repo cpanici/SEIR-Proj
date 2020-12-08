@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     # Mask adoption rate. Determines how many start in S vs M
     # Hi, avg, low: .2, .5, .9 for each
-    mask_adoption = .9
+    mask_adoption = .2
     mask_effectiveness = .9
 
     # P(S -> E)
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     plt.title(f'Total Deaths (Avg: {avg_deaths})', size=15)
     plt.show()
     
-    plt.hist(days_til_peak, bins=np.arange(min(days_til_peak), max(days_til_peak) + 1, 1))
+    plt.hist(days_til_peak)
     plt.title(f'Days Til Peak Infections (Avg: {avg_days_til_peak})', size=15)
     plt.show()
 
